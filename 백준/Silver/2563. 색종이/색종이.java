@@ -20,8 +20,8 @@ public class Main {
 
         @Override
         public boolean equals(Object obj) {
-//            if(this == obj) return true;
-//            if(obj == null || getClass()!=obj.getClass() ) return false;
+            if(this == obj) return true;
+            if(obj == null || getClass()!=obj.getClass() ) return false;
 
             Key key=(Key) obj;
             return x==key.x && y==key.y;
@@ -39,7 +39,6 @@ public class Main {
 
         int N = Integer.parseInt(st.nextToken());
         Map<Key, Integer> map = new HashMap<>();
-        Map<Integer,Integer> aaa=new HashMap<>();
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken());
@@ -47,7 +46,6 @@ public class Main {
             for (int j = x; j < x + 10; j++) {
                 for (int k = y; k < y + 10; k++) {
                     Key key = new Key(j, k);
-                    aaa.put(2, 2);
                     map.put(key, 1);
                 }
             }
