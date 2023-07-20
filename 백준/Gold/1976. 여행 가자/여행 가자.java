@@ -1,61 +1,62 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int n, m;
-	static int[][] city;
-	static int[] plan, parent;
+
+	static int[] info;
+
+	static int find(int v) {
+		if (info[v] == v)
+			return v;
+		else
+			return info[v] = find(info[v]);
+	}
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		n = Integer.parseInt(st.nextToken());
-
-		city = new int[n + 1][n + 1];
-		parent = new int[n + 1];
+		int N = Integer.parseInt(st.nextToken());
+		int[][] city = new int[N + 1][N + 1];
+		info = new int[N + 1];
 		st = new StringTokenizer(br.readLine());
-		m = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
 
-		for (int i = 1; i <= n; i++)
-			parent[i] = i;
-		for (int i = 1; i <= n; i++) {
+		for (int i = 1; i <= N; i++)
+			info[i] = i;
+		for (int i = 1; i <= N; i++) {
 			st = new StringTokenizer(br.readLine());
-			for (int j = 1; j <= n; j++) {
+			for (int j = 1; j <= N; j++) {
 				city[i][j] = Integer.parseInt(st.nextToken());
-				if (city[i][j] == 1)
-					union(i, j);
+				if (city[i][j] == 1) {
+					int pari = find(i);
+					int parj = find(j);
+					if (pari > parj)
+						info[pari] = parj;
+					else
+						info[parj] = pari;
+				}
 			}
 		}
-
+		boolean flag = false;
 		st = new StringTokenizer(br.readLine());
-		plan = new int[m + 1];
-		for (int i = 0; i < m; i++)
+		int[] plan = new int[M];
+		for (int i = 0; i < M; i++)
 			plan[i] = Integer.parseInt(st.nextToken());
-		for (int i = 1; i < m; i++) {
-			if (parent[plan[i - 1]] != parent[plan[i]]) {
-				System.out.println("NO");
-				return;
+		for (int i = 1; i < M; i++) {
+			if (info[plan[i - 1]] != info[plan[i]]) {
+				flag = true;
+				break;
 			}
 		}
-		System.out.println("YES");
-	}// etc
-
-	static void union(int x, int y) {
-		int xRoot = find(x);
-		int yRoot = find(y);
-		if (xRoot > yRoot)
-			parent[xRoot] = yRoot;
+		if (flag)
+			System.out.println("NO");
 		else
-			parent[yRoot] = xRoot;
-	}
+			System.out.println("YES");
 
-	static int find(int x) {
-		if (parent[x] == x)
-			return x;
-		else
-			return parent[x] = find(parent[x]);
-	}
-}// etc
+	}//
+
+}//
