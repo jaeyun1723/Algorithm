@@ -1,30 +1,29 @@
-#include<iostream>
-#include<vector>
-#include<cstring>
-#include<algorithm>
-#include<string>
-using namespace std;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-int main(int argc, char** argv)
-{
-	int test_case;
-	int T;
+public class Solution {
 
-	cin >> T;
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-	for (test_case = 1; test_case <= T; ++test_case)
-	{
-		string st;
-		cin >> st;
-		int cnt = 0;
-		bool cur = false;
-		for (int i = 0; i < st.size(); i++) {
-			if (cur!=st[i]-'0') {
-				cnt++;
-				cur = !cur;
+		int T = Integer.parseInt(st.nextToken());
+
+		for (int t = 1; t <= T; t++) {
+			st = new StringTokenizer(br.readLine());
+			String str = st.nextToken();
+			char prev = str.charAt(0);
+			int cnt = prev == '1' ? 1 : 0;
+			for (int i = 1; i < str.length(); i++) {
+				if (str.charAt(i) != prev)
+					cnt++;
+				prev = str.charAt(i);
 			}
+		System.out.println("#" + t + " " + cnt);
 		}
-		cout << "#" << test_case << " " << cnt << "\n";
-	}
-	return 0;//정상종료시 반드시 0을 리턴해야합니다.
-}
+
+	}//
+
+}//
