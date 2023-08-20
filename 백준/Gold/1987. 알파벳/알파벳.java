@@ -29,28 +29,23 @@ public class Main {
 
     static int R, C, answer;
     static char[][] board;
-    static boolean[][] isVisit;
     static boolean[] alphabet;
     static int[] dx = {-1, 1, 0, 0}; // 상 하 좌 우
     static int[] dy = {0, 0, -1, 1};
 
     static void dfs(int r, int c, int cnt) {
-        if (isVisit[r][c] || alphabet[board[r][c] - 'A']) {
-            answer = Math.max(answer, cnt - 1);
-            return;
-        }
-        isVisit[r][c] = true;
-        alphabet[board[r][c] - 'A'] = true;
+        answer = Math.max(answer, cnt);
+
         for (int i = 0; i < 4; i++) {
             int x = r + dx[i];
             int y = c + dy[i];
-            if (x < 0 || x >= R || y < 0 || y >= C) {
+            if (x < 0 || x >= R || y < 0 || y >= C || alphabet[board[x][y] - 'A']) {
                 continue;
             }
+            alphabet[board[x][y] - 'A'] = true;
             dfs(x, y, cnt + 1);
+            alphabet[board[x][y] - 'A'] = false;
         }
-        isVisit[r][c] = false;
-        alphabet[board[r][c] - 'A'] = false;
     }
 
     public static void main(String[] args) throws IOException {
@@ -61,7 +56,6 @@ public class Main {
         C = Integer.parseInt(st.nextToken());
 
         board = new char[R][C];
-        isVisit = new boolean[R][C];
         alphabet = new boolean[26];
         for (int i = 0; i < R; i++) {
             st = new StringTokenizer(br.readLine());
@@ -70,6 +64,7 @@ public class Main {
                 board[i][j] = str.charAt(j);
             }
         }
+        alphabet[board[0][0]-'A'] = true;
         dfs(0, 0, 1);
         System.out.println(answer);
     }//
