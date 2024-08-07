@@ -26,11 +26,11 @@ class Main {
                 if (start[0] == nx && start[1] == ny && count >= 4) {
                     return true;
                 }
-            } else {
-                isVisit[nx][ny] = true;
-                if (isCycle(start, new int[]{nx, ny}, isVisit, count + 1)) {
-                    return true;
-                }
+                continue;
+            }
+            isVisit[nx][ny] = true;
+            if (isCycle(start, new int[]{nx, ny}, isVisit, count + 1)) {
+                return true;
             }
         }
         return false;
