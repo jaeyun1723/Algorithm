@@ -52,7 +52,7 @@ class Main {
         }
 
         int left = 0;
-        int right = limit;
+        int right = assets[N - 1];
         while (left <= right) {
             int mid = (left + right) / 2;
             if (possible(mid)) {
