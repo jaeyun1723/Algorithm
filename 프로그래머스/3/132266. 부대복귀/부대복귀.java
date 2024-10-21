@@ -5,6 +5,7 @@ class Solution {
     public int[] solution(int n, int[][] roads, int[] sources, int destination) {
         int[] answer = new int[sources.length];
         int[] dp = new int[n + 1];
+        boolean[] visited = new boolean[n + 1];
         ArrayList<Integer>[] list = new ArrayList[n + 1];
         for (int i = 1; i < list.length; i++) {
             list[i] = new ArrayList<>();
@@ -23,10 +24,13 @@ class Solution {
             if (dp[now[0]] < now[1]) {
                 continue;
             }
-            for (int next : list[now[0]]) {
-                if (dp[next] > dp[now[0]] + 1) {
-                    dp[next] = dp[now[0]] + 1;
-                    pq.add(new int[]{next, dp[next]});
+            if (!visited[now[0]]) {
+                visited[now[0]] = true;
+                for (int next : list[now[0]]) {
+                    if (!visited[next] && dp[next] > dp[now[0]] + 1) {
+                        dp[next] = dp[now[0]] + 1;
+                        pq.add(new int[]{next, dp[next]});
+                    }
                 }
             }
         }
