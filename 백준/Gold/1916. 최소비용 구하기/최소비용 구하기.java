@@ -42,7 +42,7 @@ class Main {
 //                continue;
 //            }
             if (now[0] == end) {
-//                System.out.println(dist[end]);
+                System.out.println(dist[end]);
                 break;
             }
             if (!visited[now[0]]) {
@@ -57,7 +57,6 @@ class Main {
             }
         }
 
-        System.out.println(dist[end]);
     }
 
     public static class Schedule {
