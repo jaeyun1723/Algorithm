@@ -38,9 +38,9 @@ class Main {
 
         while (!pq.isEmpty()) {
             int[] now = pq.poll();
-//            if (dist[now[0]] < now[1]) {
-//                continue;
-//            }
+            if (dist[now[0]] < now[1]) {
+                continue;
+            }
             if (now[0] == end) {
                 System.out.println(dist[end]);
                 break;
