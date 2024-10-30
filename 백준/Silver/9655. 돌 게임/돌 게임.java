@@ -10,7 +10,7 @@ class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         int N = Integer.parseInt(st.nextToken());
-        if (N % 2 == 1 || N % 4 == 1 || N % 4 == 3 || N % 6 == 3) {
+        if (N % 2 == 1) {
             System.out.println("SK");
         } else {
             System.out.println("CY");
