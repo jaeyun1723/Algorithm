@@ -3,12 +3,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
@@ -31,24 +27,36 @@ class Main {
             map.put(str, map.getOrDefault(str, 0) + 1);
         }
 
-        List<String> keySet = new ArrayList<>(map.keySet());
-        Collections.sort(keySet, (o1, o2) -> {
-            if (map.get(o1) == map.get(o2)) {
-                if (o1.length() == o2.length()) {
-                    return o1.compareTo(o2);
+        PriorityQueue<Word> pq = new PriorityQueue<>((o1, o2) -> {
+            if (o1.count == o2.count) {
+                if (o1.w.length() == o2.w.length()) {
+                    return o1.w.compareTo(o2.w);
                 }
-                return Integer.compare(o2.length(), o1.length());
+                return Integer.compare(o2.w.length(), o1.w.length());
             }
-            return Integer.compare(map.get(o2), map.get(o1));
+            return Integer.compare(o2.count, o1.count);
         });
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out
         ));
-
-        for (String key : keySet) {
-            writer.write(key + "\n");
+        for (String key : map.keySet()) {
+            pq.add(new Word(key, map.get(key)));
         }
-            writer.flush();
+
+        while (!pq.isEmpty()) {
+            writer.write(pq.poll().w + "\n");
+        }
+        writer.flush();
     }
 
+    public static class Word {
+
+        String w;
+        int count;
+
+        public Word(String w, int count) {
+            this.w = w;
+            this.count = count;
+        }
+    }
 }
