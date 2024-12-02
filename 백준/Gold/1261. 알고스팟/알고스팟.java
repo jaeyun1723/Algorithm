@@ -14,14 +14,16 @@ public class Main {
         }
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[2], o2[2]));
         pq.add(new int[]{0, 0, 0});
+        boolean[][] isVisit = new boolean[N][M];
         dp[0][0] = 0;
         while (!pq.isEmpty()) {
             int[] now = pq.poll();
             if (now[0] == N - 1 && now[1] == M - 1) {
-                dp[N - 1][M - 1] = Math.min(dp[N - 1][M - 1], now[2]);
-                continue;
+                return now[2];
             }
             if (dp[now[0]][now[1]] < now[2]) continue;
+            if (isVisit[now[0]][now[1]]) continue;
+            isVisit[now[0]][now[1]] = true;
             for (int i = 0; i < 4; i++) {
                 int nx = now[0] + dx[i];
                 int ny = now[1] + dy[i];
