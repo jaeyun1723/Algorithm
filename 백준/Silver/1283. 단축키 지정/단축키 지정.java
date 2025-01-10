@@ -12,7 +12,7 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
 
-        HashMap<Character, Integer> map = new HashMap<>();
+        Set<Character> set = new HashSet<>();
         String[] result = new String[N];
 
         for (int i = 0; i < N; i++) {
@@ -24,8 +24,8 @@ public class Main {
             int idx = 0;
             for (int j = 0; j < words.length; j++) {
                 char tmp = words[j].toLowerCase().charAt(0);
-                if (!map.containsKey(tmp)) {
-                    map.put(tmp, idx);
+                if (!set.contains(tmp)) {
+                    set.add(tmp);
                     flag = true;
                     break;
                 } else
@@ -39,8 +39,8 @@ public class Main {
             // Step 2
             for (int j = 0; j < str.length(); j++) {
                 if (str.charAt(j) == ' ') continue;
-                if (!map.containsKey(str.toLowerCase().charAt(j))) {
-                    map.put(str.toLowerCase().charAt(j), j);
+                if (!set.contains(str.toLowerCase().charAt(j))) {
+                    set.add(str.toLowerCase().charAt(j));
                     idx = j;
                     flag = true;
                     break;
@@ -55,6 +55,7 @@ public class Main {
 
         for (String s : result)
             System.out.println(s);
+
     }
 
 }
