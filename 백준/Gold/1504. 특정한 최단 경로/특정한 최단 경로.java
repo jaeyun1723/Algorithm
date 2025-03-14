@@ -72,13 +72,12 @@ class Main {
         int v2 = Integer.parseInt(st.nextToken());
 
         // 1->v1->v2->N && 1->v2->v1->N
-        int[] toN = dijkstra(1, N); // 1->N
-        int[] toV1 = dijkstra(1, v1); // v1->1 or 1->v1
-        int[] toV2 = dijkstra(1, v2); // 1->v2 or v2->1
-        int[] v1ToV2 = dijkstra(v1, v2); // v1->v2 or v2->v1
+        int[] toN = dijkstra(1, N);
+        int[] v1ToV2 = dijkstra(v1, v2);
         int[] v2ToV1 = dijkstra(v2, v1);
         int[] v1ToN = dijkstra(v1, N);
         int[] v2ToN = dijkstra(v2, N);
+        
         int answer = INF;
         if (!isImpossible(toN[v1], v1ToV2[v2], v2ToN[N])) {
             answer = toN[v1] + v1ToV2[v2] + v2ToN[N];
