@@ -1,54 +1,33 @@
-import java.util.*;
-
 class Solution {
-    static int answer;
-    static String[][] set;
 
-    static void dfs(String now, String target, int count) {
-        if (now.equals(target)) {
-            if (answer == 0) {
-                answer = count;
-            } else {
-                answer = Math.min(answer, count);
-            }
-            return;
-        }
-        for (int i = 0; i < set.length; i++) {
-            if (set[i][1].equals("1")) {
-                continue;
-            }
-            int cnt = 0;
-            for (int j = 0; j < set[i][0].length(); j++) {
-                if (now.charAt(j) != set[i][0].charAt(j)) {
-                    cnt++;
-                }
-                if (cnt > 1) {
-                    break;
-                }
-            }
-            if (cnt == 1) {
-                set[i][1] = "1";
-                dfs(set[i][0], target, count + 1);
-                set[i][1] = "0";
-            }
-        }
+  static int answer = Integer.MAX_VALUE;
+
+  public int difference(String w1, String w2) {
+    int result = 0;
+    for (int i = 0; i < w1.length(); i++) {
+      if (w1.charAt(i) != w2.charAt(i)) {
+        result++;
+      }
     }
+    return result;
+  }
 
-    public static int solution(String begin, String target, String[] words) {
-        set = new String[words.length][2];
-        for (int i = 0; i < set.length; i++) {
-            set[i][0] = words[i];
-            set[i][1] = "0";
-        }
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].equals(target)) {
-                dfs(begin, target, 0);
-                break;
-            }
-        }
-        
-        return answer;
+  public void dfs(String start, String end, String[] words, boolean[] isChange, int count) {
+    if (start.equals(end)) {
+      answer = Math.min(answer, count);
+      return;
     }
+    for (int i = 0; i < words.length; i++) {
+      if (!isChange[i] && difference(start, words[i]) == 1) {
+        isChange[i] = true;
+        dfs(words[i], end, words, isChange, count + 1);
+        isChange[i] = false;
+      }
+    }
+  }
 
-
+  public int solution(String begin, String target, String[] words) {
+    dfs(begin, target, words, new boolean[words.length], 0);
+    return answer == Integer.MAX_VALUE ? 0 : answer;
+  }
 }
