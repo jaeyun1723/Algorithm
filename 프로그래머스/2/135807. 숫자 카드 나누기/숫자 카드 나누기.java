@@ -2,32 +2,28 @@ import java.util.*;
 
 class Solution {
 
-    public boolean notDivisible(int num, int[] arr) {
-        for (int e : arr) {
-            if (e % num == 0) return false;
-        }
-        return true;
+  public static int gcd(int a, int b) {
+    if (a % b == 0) {
+      return b;
     }
+    return gcd(b, a % b);
+  }
 
-    public int gcd(int a, int b) {
-        if (b == 0) return a;
-        return gcd(b, a % b);
+  public static int conidtion(int[] arr1, int[] arr2) {
+    Arrays.sort(arr1);
+    int result = arr1[0];
+    for (int i = 1; i < arr1.length; i++) {
+      result = gcd(result, arr1[i]);
     }
-
-    public int solution(int[] arrayA, int[] arrayB) {
-        int answer = 0;
-        int gcdA = arrayA[0];
-        int gcdB = arrayB[0];
-        for (int i = 1; i < arrayA.length; i++) {
-            gcdA = gcd(gcdA, arrayA[i]);
-            gcdB = gcd(gcdB, arrayB[i]);
-        }
-
-        if (notDivisible(gcdA, arrayB)) {
-            answer = gcdA;
-        }
-        if (notDivisible(gcdB, arrayA))
-            answer = Math.max(answer, gcdB);
-        return answer;
+    for (int i = 0; i < arr2.length; i++) {
+      if (arr2[i] % result == 0) {
+        return 0;
+      }
     }
+    return result;
+  }
+
+  public int solution(int[] arrayA, int[] arrayB) {
+    return Math.max(conidtion(arrayA, arrayB), conidtion(arrayB, arrayA));
+  }
 }
