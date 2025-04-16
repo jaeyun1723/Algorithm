@@ -1,91 +1,88 @@
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main {
 
-	static int N;
-	static char[][] grid;
-	static int[] dx = { 1, -1, 0, 0 }, dy = { 0, 0, -1, 1 };
-	static boolean[][] isVisit;
+class Main {
 
-	static void colorWeakness(int r, int c) {
-		Deque<Point> deq = new ArrayDeque<>();
-		deq.offerLast(new Point(r, c));
-		while (!deq.isEmpty()) {
-			Point now = deq.pollFirst();
-			for (int i = 0; i < 4; i++) {
-				int nx = now.x + dx[i];
-				int ny = now.y + dy[i];
-				if (nx < 0 || nx >= N || ny < 0 || ny >= N || isVisit[nx][ny])
-					continue;
-				if (grid[now.x][now.y] != grid[nx][ny] && (grid[now.x][now.y] == 'B' || grid[nx][ny] == 'B'))
-					continue;
-				isVisit[nx][ny] = true;
-				deq.offer(new Point(nx, ny));
-			}
-		}
-	}
+    static int N;
+    static char[][] grid;
 
-	static void common(int r, int c) {
-		Deque<Point> deq = new ArrayDeque<>();
-		deq.offerLast(new Point(r, c));
-		isVisit[r][c] = true;
-		while (!deq.isEmpty()) {
-			Point now = deq.pollFirst();
-			for (int i = 0; i < 4; i++) {
-				int nx = now.x + dx[i];
-				int ny = now.y + dy[i];
-				if (nx < 0 || nx >= N || ny < 0 || ny >= N || isVisit[nx][ny] || grid[nx][ny] != grid[now.x][now.y])
-					continue;
-				isVisit[nx][ny] = true;
-				deq.offer(new Point(nx, ny));
-			}
-		}
-	}
+    static int[] dx = {-1, 1, 0, 0}, dy = {0, 0, -1, 1};
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
+    public static boolean isEqual(char a, char b) {
+        if (a != b && (a == 'B' || b == 'B')) {
+            return false;
+        }
+        return true;
+    }
 
-		N = Integer.parseInt(st.nextToken());
-		grid = new char[N][N];
-		isVisit = new boolean[N][N];
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			String str = st.nextToken();
-			for (int j = 0; j < N; j++) {
-				grid[i][j] = str.charAt(j);
-			}
-		}
+    public static void bfs(int x, int y, boolean[][] isVisited, int type) {
+        Deque<int[]> deq = new ArrayDeque<>();
+        deq.add(new int[]{x, y});
+        isVisited[x][y] = true;
+        while (!deq.isEmpty()) {
+            int[] now = deq.pollFirst();
+            for (int i = 0; i < 4; i++) {
+                int nx = now[0] + dx[i];
+                int ny = now[1] + dy[i];
+                if (nx < 0 || ny < 0 || nx >= N || ny >= N || isVisited[nx][ny]) {
+                    continue;
+                }
+                if (type == 0 && grid[x][y] == grid[nx][ny]) {
+                    isVisited[nx][ny] = true;
+                    deq.offerLast(new int[]{nx, ny});
+                }
+                if (type == 1 && isEqual(grid[x][y], grid[nx][ny])) {
+                    isVisited[nx][ny] = true;
+                    deq.offerLast(new int[]{nx, ny});
+                }
+            }
+        }
 
-		int cCnt = 0;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (!isVisit[i][j]) {
-					common(i, j);
-					cCnt++;
-				}
-			}
-		}
-		for (int i = 0; i < N; i++) {
-			Arrays.fill(isVisit[i], false);
-		}
-		int wCnt = 0;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (!isVisit[i][j]) {
-					colorWeakness(i, j);
-					wCnt++;
-				}
-			}
-		}
+    }
 
-		System.out.println(cCnt + " " + wCnt);
-	}
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+
+        grid = new char[N][N];
+
+        for (int i = 0; i < N; i++) {
+            String str = br.readLine();
+            for (int j = 0; j < str.length(); j++) {
+                grid[i][j] = str.charAt(j);
+            }
+        }
+
+        boolean[][] isVisited1 = new boolean[N][N];
+        boolean[][] isVisited2 = new boolean[N][N];
+        int answer1 = 0;
+        int answer2 = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (!isVisited1[i][j]) {
+                    answer1++;
+                    bfs(i, j, isVisited1, 0);
+                }
+                if (!isVisited2[i][j]) {
+                    answer2++;
+                    bfs(i, j, isVisited2, 1);
+                }
+            }
+        }
+
+        System.out.println(answer1 + " " + answer2);
+    }
+
+
 }
