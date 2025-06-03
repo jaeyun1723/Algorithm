@@ -1,19 +1,20 @@
-import java.util.*;
-
 class Solution {
+
     static int answer;
-        
-    public static void subset(int[] numbers, int target, int idx, int cnt){
-        if(idx==numbers.length){
-            if(cnt==target) answer++;
+
+    public void subset(int idx, int[] numbers, int target, int sum) {
+        if (idx == numbers.length) {
+            if (sum == target) {
+                answer++;
+            }
             return;
         }
-        subset(numbers,target,idx+1,cnt+numbers[idx]);
-        subset(numbers,target,idx+1,cnt-numbers[idx]);
+        subset(idx + 1, numbers, target, sum + numbers[idx]);
+        subset(idx + 1, numbers, target, sum - numbers[idx]);
     }
-        
+
     public int solution(int[] numbers, int target) {
-       subset(numbers,target,0,0);
+        subset(0, numbers, target, 0);
         return answer;
     }
 }
