@@ -1,5 +1,7 @@
-SELECT car_id, round(avg(datediff(end_date,start_date)+1),1) as average_duration
-FROM car_rental_company_rental_history
+SELECT car_id as CAR_ID, round(avg(diff),1) as AVERAGE_DURATION
+FROM (SELECT car_id, datediff(end_date, start_date)+1 as diff
+      FROM car_rental_company_rental_history) as car_table
 GROUP BY car_id
-HAVING average_duration >=7
-ORDER BY average_duration DESC, car_id DESC
+HAVING avg(diff)>=7
+ORDER BY AVERAGE_DURATION DESC, CAR_ID DESC
+
