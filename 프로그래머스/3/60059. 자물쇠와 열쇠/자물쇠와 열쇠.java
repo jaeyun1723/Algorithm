@@ -1,78 +1,76 @@
-import java.util.*;
-
 class Solution {
-
-    public static int[][] rotateKey(int[][] key) { // 90도 시계방향
-        int[][] newKey = new int[key.length][key.length];
-        for (int i = 0; i < newKey.length; i++) {
-            for (int j = 0; j < newKey.length; j++) {
-                newKey[i][j] = key[j][newKey.length - i - 1];
-            }
-        }
-        return newKey;
-    }
-
-    public static boolean isKey(int[][] map, int[][] key, int lockLen) {
-        int keyLen = key.length;
-        int mapLen = map.length;
-        // setting
-        for (int i = 0; i <= mapLen - keyLen; i++) {
-            for (int j = 0; j <= mapLen - keyLen; j++) {
-                // 0. 키 시작인덱스
-                // 1. 키를 더해줌
-                for (int x = 0; x < keyLen; x++) {
-                    for (int y = 0; y < keyLen; y++) {
-                        map[i + x][j + y] += key[x][y];
+    
+    public static boolean check(int[][] map, int[][] key, int lockLen){
+        int keyLen=key.length;
+        int mapLen=map.length;
+        
+        for(int i=0;i<mapLen-keyLen+1;i++){
+            for(int j=0;j<mapLen-keyLen+1;j++){
+                
+                for(int k=0;k<keyLen;k++){
+                    for(int l=0;l<keyLen;l++){
+                        map[i+k][j+l]+=key[k][l];
                     }
                 }
-                boolean flag = true;
-                for (int x = keyLen - 1; x < keyLen + lockLen - 1; x++) {
-                    for (int y = keyLen - 1; y < keyLen + lockLen - 1; y++) {
-                        if (map[x][y] != 1) {
-                            flag = false;
+                
+                boolean flag= true;
+                for(int k=keyLen-1;k<keyLen+lockLen-1;k++){
+                    for(int l=keyLen-1;l<keyLen+lockLen-1;l++){
+                        if(map[k][l]!=1){
+                            flag=false;
                             break;
                         }
                     }
-                    if (!flag) {
-                        break;
+                    if(!flag) break;
+                }
+                if(flag) return true;
+                
+                for(int k=0;k<keyLen;k++){
+                    for(int l=0;l<keyLen;l++){
+                        map[i+k][j+l]-=key[k][l];
                     }
                 }
-                if (flag) {
-                    return true;
-                }
-
-                for (int x = 0; x < keyLen; x++) {
-                    for (int y = 0; y < keyLen; y++) {
-                        map[i + x][j + y] -= key[x][y];
-                    }
-                }
-
             }
         }
+        
         return false;
     }
-
+    
+    public static void rotate(int[][] key){
+        int len= key.length;
+        int[][] tmp=new int[len][len];
+        
+        for(int i=0;i<len;i++){
+            for(int j=0;j<len;j++){
+                tmp[i][j]=key[j][len-i-1];
+            }
+        }
+        
+        for(int i=0;i<len;i++){
+            for(int j=0;j<len;j++){
+                key[i][j]=tmp[i][j];
+            }
+        }
+    }
     public boolean solution(int[][] key, int[][] lock) {
-        int k = key.length; // 3
-        int l = lock.length; // 3
-        int size = k * 2 + l - 2; // 7
-        int[][] map = new int[size][size];
-
-        for (int i = k - 1; i < l + k - 1; i++) {
-            for (int j = k - 1; j < l + k - 1; j++) {
-                map[i][j] = lock[i - (k - 1)][j - (k - 1)];
+        int m =key.length;
+        int n =lock.length;
+        
+        int size=n+2*m-2;
+        int[][] map=new int[size][size];
+        
+        for(int i=m-1;i<m+n-1;i++){
+            for(int j=m-1;j<m+n-1;j++){
+                map[i][j]=lock[i-(m-1)][j-(m-1)];
             }
         }
-
-        for (int i = 0; i < 4; i++) {
-            if (isKey(map, key, l)) {
+        
+        for(int i=0;i<4;i++){
+            if(check(map,key,n))
                 return true;
-            }
-            key = rotateKey(key);
-
-
+            rotate(key);
         }
-
+        
         return false;
     }
 }
