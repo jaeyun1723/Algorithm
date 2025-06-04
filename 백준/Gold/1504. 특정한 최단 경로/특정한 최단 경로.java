@@ -1,48 +1,40 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
 
+public class Main {
 
-class Main {
+    static int INF = 200_000_001;
+    static int N, E;
+    static ArrayList<Info>[] list;
 
-    static int N;
-    static ArrayList<Edge>[] list;
-    final static int INF = 1000 * 801;
-
-    public static int[] dijkstra(int start, int end) {
-        int[] result = new int[N + 1];
-        boolean[] isVisit = new boolean[N + 1];
-        Arrays.fill(result, INF);
-        result[start] = 0;
+    public static int dijkstra(int start, int end) {
+        int[] distance = new int[N + 1];
+        boolean[] visited = new boolean[N + 1];
+        Arrays.fill(distance, INF);
+        distance[start] = 0;
         PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[1], o2[1]));
         pq.add(new int[]{start, 0});
+
         while (!pq.isEmpty()) {
-            int now[] = pq.poll();
-            if (result[now[0]] < now[1]) {
+            int[] now = pq.poll();
+            if (distance[now[0]] < now[1]) {
                 continue;
             }
-            if (!isVisit[now[0]]) {
-                isVisit[now[0]] = true;
-                for (int i = 0; i < list[now[0]].size(); i++) {
-                    Edge next = list[now[0]].get(i);
-                    if (result[next.to] > now[1] + next.distance) {
-                        result[next.to] = now[1] + next.distance;
-                        pq.add(new int[]{next.to, now[1] + next.distance});
+            if (!visited[now[0]]) {
+                visited[now[0]] = true;
+                for (Info info : list[now[0]]) {
+                    if (distance[info.end] > now[1] + info.distance) {
+                        distance[info.end] = now[1] + info.distance;
+                        pq.add(new int[]{info.end, distance[info.end]});
                     }
                 }
             }
         }
-        return result;
-    }
 
-    public static boolean isImpossible(int a, int b, int c) {
-        return (a == INF || b == INF || c == INF);
+        return distance[end];
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -50,51 +42,47 @@ class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
-        int E = Integer.parseInt(st.nextToken());
+        E = Integer.parseInt(st.nextToken());
 
         list = new ArrayList[N + 1];
         for (int i = 1; i <= N; i++) {
-            list[i] = new ArrayList<Edge>();
+            list[i] = new ArrayList<Info>();
         }
 
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int c = Integer.parseInt(st.nextToken());
-            list[a].add(new Edge(b, c));
-            list[b].add(new Edge(a, c));
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            list[u].add(new Info(v, e));
+            list[v].add(new Info(u, e));
         }
 
         st = new StringTokenizer(br.readLine());
-
         int v1 = Integer.parseInt(st.nextToken());
         int v2 = Integer.parseInt(st.nextToken());
 
-        // 1->v1->v2->N && 1->v2->v1->N
-        int[] toN = dijkstra(1, N);
-        int[] v1ToV2 = dijkstra(v1, v2);
-        int[] v2ToV1 = dijkstra(v2, v1);
-        int[] v1ToN = dijkstra(v1, N);
-        int[] v2ToN = dijkstra(v2, N);
-        
-        int answer = INF;
-        if (!isImpossible(toN[v1], v1ToV2[v2], v2ToN[N])) {
-            answer = toN[v1] + v1ToV2[v2] + v2ToN[N];
-        }
-        if (!isImpossible(toN[v2], v2ToV1[v1], v1ToN[N])) {
-            answer = Math.min(answer, toN[v2] + v2ToV1[v1] + v1ToN[N]);
-        }
-        System.out.println(answer == INF ? -1 : answer);
+        // 1 -> v1 -> v2 -> N
+        int res1 = 0;
+        res1 += dijkstra(1, v1);
+        res1 += dijkstra(v1, v2);
+        res1 += dijkstra(v2, N);
+        // 1 -> v2 -> v1 -> N
+        int res2 = 0;
+        res2 += dijkstra(1, v2);
+        res2 += dijkstra(v2, v1);
+        res2 += dijkstra(v1, N);
+        int ans = (res1 >= INF && res2 >= INF) ? -1 : Math.min(res1, res2);
+        System.out.println(ans);
     }
 
-    public static class Edge {
+    public static class Info {
 
-        int to;
+        int end;
         int distance;
 
-        public Edge(int to, int distance) {
-            this.to = to;
+        public Info(int end, int distance) {
+            this.end = end;
             this.distance = distance;
         }
     }
