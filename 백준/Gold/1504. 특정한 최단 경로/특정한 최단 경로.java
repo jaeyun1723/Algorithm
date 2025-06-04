@@ -25,8 +25,8 @@ public class Main {
             if (!visited[now[0]]) {
                 visited[now[0]] = true;
                 for (Info info : list[now[0]]) {
-                    if (distance[info.end] > now[1] + info.distance) {
-                        distance[info.end] = now[1] + info.distance;
+                    if (distance[info.end] > distance[now[0]] + info.distance) {
+                        distance[info.end] = distance[now[0]] + info.distance;
                         pq.add(new int[]{info.end, distance[info.end]});
                     }
                 }
