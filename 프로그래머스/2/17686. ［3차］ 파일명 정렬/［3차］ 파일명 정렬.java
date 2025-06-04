@@ -1,44 +1,67 @@
 import java.util.*;
 
 class Solution {
-	public String[] solution(String[] files) {
-		String[] answer = new String[files.length];
-        String[][] file = new String[files.length][3];
-        
-        for(int i=0;i<files.length;i++){
-            String f=files[i];
-            int idx=0;
-            file[i][0]=file[i][1]=file[i][2]="";
-            while(f.charAt(idx)<'0'||f.charAt(idx)>'9'){
-                file[i][0]+=f.charAt(idx);
-                if(idx>=f.length()-1)
-                    break;
-                else idx++;
+
+    public String[] solution(String[] files) {
+        String[] answer = new String[files.length];
+
+        ArrayList<File> list = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            String file = files[i];
+            StringBuilder head = new StringBuilder();
+            StringBuilder number = new StringBuilder();
+            StringBuilder tail = new StringBuilder();
+            boolean flag = false;
+            for (int j = 0; j < file.length(); j++) {
+                char c = file.charAt(j);
+                if (c >= '0' && c <= '9') {
+                    flag = true;
+                    number.append(c);
+                } else {
+                    if (flag) {
+                        tail.append(file.substring(j));
+                        break;
+                    } else {
+                        head.append(c);
+                    }
+                }
             }
-            while(f.charAt(idx)>='0'&&f.charAt(idx)<='9'){
-                file[i][1]+=f.charAt(idx);
-                if(idx>=f.length()-1)
-                    break;
-                else idx++;
-            }
-            if(idx<f.length()-1)
-            file[i][2]=f.substring(idx,f.length());
-            System.out.println(file[i][0]+"/"+file[i][1]+"/"+file[i][2]);
+            list.add(new File(i, head.toString(), number.toString(), tail.toString()));
         }
-		
-        Arrays.sort(file,new Comparator<String[]>(){
-            public int compare(String[] o1, String[] o2){
-                if(o1[0].toLowerCase().compareTo(o2[0].toLowerCase())!=0){
-                    return o1[0].toLowerCase().compareTo(o2[0].toLowerCase());
-                }else{
-                    return Integer.parseInt(o1[1])-Integer.parseInt(o2[1]);
+
+        list.sort(new Comparator<File>() {
+            public int compare(File o1, File o2) {
+                if (o1.head.toLowerCase().equals(o2.head.toLowerCase())) {
+                    if (Integer.parseInt(o1.number) == Integer.parseInt(o2.number)) {
+                        return Integer.compare(o1.idx, o2.idx);
+                    } else {
+                        return Integer.compare(Integer.parseInt(o1.number),
+                            Integer.parseInt(o2.number));
+                    }
+                } else {
+                    return o1.head.toLowerCase().compareTo(o2.head.toLowerCase());
                 }
             }
         });
-            
-        for(int i=0;i<answer.length;i++){
-            answer[i]=file[i][0]+file[i][1]+file[i][2];
+
+        for (int i = 0; i < answer.length; i++) {
+            answer[i] = files[list.get(i).idx];
         }
-		return answer;
-	}
+        return answer;
+    }
+
+    public class File {
+
+        int idx;
+        String head;
+        String number;
+        String tail;
+
+        public File(int idx, String head, String number, String tail) {
+            this.idx = idx;
+            this.head = head;
+            this.number = number;
+            this.tail = tail;
+        }
+    }
 }
