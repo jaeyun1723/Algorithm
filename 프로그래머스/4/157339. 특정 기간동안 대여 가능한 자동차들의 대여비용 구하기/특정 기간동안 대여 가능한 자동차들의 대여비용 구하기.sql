@@ -1,10 +1,12 @@
--- 코드를 입력하세요
-SELECT car_id, a.car_type, floor(daily_fee*30*(1-discount_rate/100)) as fee
-FROM CAR_RENTAL_COMPANY_CAR as a JOIN CAR_RENTAL_COMPANY_DISCOUNT_PLAN as b on a.car_type=b.car_type
-WHERE car_id NOT IN (SELECT  car_id
-                    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY 
-                    WHERE end_date >= '2022-11-01' AND start_date <= '2022-12-01')
-AND duration_type = '30일 이상'
-AND a.car_type IN ('세단', 'SUV')
-AND floor(daily_fee*30*(1-discount_rate/100))>=500000 and floor(daily_fee*30*(1-discount_rate/100))<2000000
-order by fee desc, car_type, car_id desc
+SELECT C.CAR_ID, C.CAR_TYPE, ROUND(C.DAILY_FEE*30*(100-P.DISCOUNT_RATE)/100) AS FEE
+FROM CAR_RENTAL_COMPANY_CAR AS C
+JOIN CAR_RENTAL_COMPANY_RENTAL_HISTORY AS H ON C.CAR_ID=H.CAR_ID
+JOIN CAR_RENTAL_COMPANY_DISCOUNT_PLAN AS P ON C.CAR_TYPE=P.CAR_TYPE
+WHERE C.CAR_ID NOT IN (
+    SELECT CAR_ID
+    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+    WHERE END_DATE > '2022-11-01' AND START_DATE < '2022-12-01'
+) AND P.DURATION_TYPE='30일 이상'
+GROUP BY C.CAR_ID
+HAVING C.CAR_TYPE IN ('세단', 'SUV') AND (FEE>=500000 AND FEE<2000000) 
+ORDER BY FEE DESC, CAR_TYPE, CAR_ID DESC
