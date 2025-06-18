@@ -5,5 +5,4 @@ WHERE item_id IN (SELECT item_id
                   WHERE parent_item_id IN (SELECT item_id
                                            FROM item_info
                                            WHERE rarity='RARE'))
-ORDER BY item_id DESC
-
+ORDER BY item_id desc
