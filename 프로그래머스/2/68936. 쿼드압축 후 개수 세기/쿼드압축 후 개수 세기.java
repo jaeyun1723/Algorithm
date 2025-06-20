@@ -1,36 +1,37 @@
 class Solution {
-    static int[][] arr;
-    static int ZERO, ONE;
 
-    public static boolean equal(int x, int y, int length) {
-        for (int i = x; i < x + length; i++) {
-            for (int j = y; j < y + length; j++) {
-                if (arr[i][j] != arr[x][y])
+    static int[][] map;
+
+    public boolean canCompress(int x, int y, int len) {
+        for (int i = x; i < x + len; i++) {
+            for (int j = y; j < y + len; j++) {
+                if (map[x][y] != map[i][j]) {
                     return false;
+                }
             }
         }
         return true;
     }
 
-    public static void quad(int x, int y, int length) {
-        if (equal(x, y, length)) {
-            if (arr[x][y] == 1) ONE++;
-            else ZERO++;
+    public void quadTree(int x, int y, int len, int[] answer) {
+        if (len == 1) {
+            answer[map[x][y]] += 1;
             return;
         }
-        quad(x, y, length / 2);
-        quad(x, y + length / 2, length / 2);
-        quad(x + length / 2, y, length / 2);
-        quad(x + length / 2, y + length / 2, length / 2);
+        if (canCompress(x, y, len)) {
+            answer[map[x][y]] += 1;
+            return;
+        }
+        quadTree(x, y, len / 2, answer);
+        quadTree(x, y + len / 2, len / 2, answer);
+        quadTree(x + len / 2, y, len / 2, answer);
+        quadTree(x + len / 2, y + len / 2, len / 2, answer);
     }
 
-
     public int[] solution(int[][] arr) {
-        int[] answer = {0, 0};
-        Solution.arr = arr;
-        quad(0, 0, arr.length);
-        answer[0] = ZERO;
-        answer[1] = ONE;
+        map = arr;
+        int[] answer = new int[2];
+        quadTree(0, 0, arr.length, answer);
         return answer;
     }
 }
