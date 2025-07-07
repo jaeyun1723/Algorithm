@@ -1,7 +1,8 @@
 SELECT id
-FROM ecoli_data
+FROM ECOLI_DATA
 WHERE parent_id IN (SELECT id
-                    FROM ecoli_data
-                    WHERE parent_id IN (SELECT id 
-                                        FROM ecoli_data
-                                        WHERE parent_id is NULL))
+                    FROM ECOLI_DATA
+                    WHERE parent_id IN (SELECT id
+                                        FROM ECOLI_DATA
+                                        WHERE parent_id IS NULL))
+ORDER BY id
