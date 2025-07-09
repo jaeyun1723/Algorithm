@@ -2,64 +2,62 @@ import java.util.*;
 
 class Solution {
 
-    static String[] map;
+    static char[][] map;
+    static int row, col;
     static int[] dx = {-1, 1, 0, 0}, dy = {0, 0, -1, 1};
-    static int[] start, lever, end;
 
-    public static int bfs(int[] a, char s) {
-        int row = map.length;
-        int col = map[0].length();
-        boolean[][] isVisit = new boolean[row][col];
+    public static int bfs(int[] start, int[] end) {
         Deque<int[]> deq = new ArrayDeque<>();
-        deq.add(new int[]{a[0], a[1], 0});
-        isVisit[a[0]][a[1]] = true;
+        boolean[][] visited = new boolean[row][col];
+        visited[start[0]][start[1]] = true;
+        deq.add(new int[]{start[0], start[1], 0});
         while (!deq.isEmpty()) {
             int[] now = deq.pollFirst();
+            if (now[0] == end[0] && now[1] == end[1]) {
+                return now[2];
+            }
             for (int i = 0; i < 4; i++) {
                 int nx = now[0] + dx[i];
                 int ny = now[1] + dy[i];
-                if (nx < 0 || ny < 0 || nx >= row || ny >= col) {
+                if (nx < 0 || nx >= row || ny < 0 || ny >= col || visited[nx][ny]
+                    || map[nx][ny] == 'X') {
                     continue;
                 }
-                if (map[nx].charAt(ny) == 'X' || isVisit[nx][ny]) {
-                    continue;
-                }
-                if (map[nx].charAt(ny) != 'X' && !isVisit[nx][ny]) {
-                    isVisit[nx][ny] = true;
-                    deq.offerLast(new int[]{nx, ny, now[2] + 1});
-                }
-                if (map[nx].charAt(ny) == s) {
-                    return now[2] + 1;
-                }
+                visited[nx][ny] = true;
+                deq.offerLast(new int[]{nx, ny, now[2] + 1});
             }
         }
         return -1;
     }
 
     public int solution(String[] maps) {
-        map = maps;
-        start = new int[2];
-        lever = new int[2];
-        end = new int[2];
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length(); j++) {
-                if (map[i].charAt(j) == 'S') {
+        int answer = 0;
+        row = maps.length;
+        col = maps[0].length();
+        map = new char[maps.length][maps[0].length()];
+        int[] start = new int[2];
+        int[] end = new int[2];
+        int[] lever = new int[2];
+        for (int i = 0; i < row; i++) {
+            map[i] = maps[i].toCharArray();
+            for (int j = 0; j < col; j++) {
+                if (map[i][j] == 'S') {
                     start[0] = i;
                     start[1] = j;
-                } else if (map[i].charAt(j) == 'L') {
+                } else if (map[i][j] == 'L') {
                     lever[0] = i;
                     lever[1] = j;
-                } else if (map[i].charAt(j) == 'E') {
+                } else if (map[i][j] == 'E') {
                     end[0] = i;
                     end[1] = j;
                 }
             }
         }
-        int sToL = bfs(start, 'L');
-        int lToE = bfs(lever, 'E');
-        if (sToL == -1 || lToE == -1) {
+        int t1 = bfs(start, lever);
+        int t2 = bfs(lever, end);
+        if (t1 == -1 || t2 == -1) {
             return -1;
         }
-        return sToL + lToE;
+        return answer = t1 + t2;
     }
 }
