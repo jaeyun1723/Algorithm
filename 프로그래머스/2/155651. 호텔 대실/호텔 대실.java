@@ -1,28 +1,31 @@
+
 class Solution {
-    
-    public int cleanTime(int time){
-        int cleaning=time+10;
-        if(cleaning%100>=60){
-            cleaning+=40;
-        }
-        return cleaning;
+
+    public static int parseInt(String time) {
+        String[] t = time.split(":");
+        int hour = Integer.parseInt(t[0]);
+        int minute = Integer.parseInt(t[1]);
+        return hour * 60 + minute;
     }
-    
+
     public int solution(String[][] book_time) {
-        int[] book=new int[2360];
-        int answer=1;
-        for(int i=0;i<book_time.length;i++){
-            int start=Integer.parseInt(book_time[i][0].replace(":",""));
-            int end=Integer.parseInt(book_time[i][1].replace(":",""));
-            int endClean=cleanTime(end);
-            if(endClean>2359) endClean=2359;
-            for(int j=start;j<endClean;j++){
-                book[j]++;
+        int answer = 0;
+        int[] timeSlot = new int[1440];
+
+        for (int i = 0; i < book_time.length; i++) {
+            String startTime = book_time[i][0];
+            String endTime = book_time[i][1];
+            int start = parseInt(startTime);
+            int end = parseInt(endTime);
+            for (int j = start; j < Math.min(end + 10, 1440); j++) {
+                timeSlot[j]++;
             }
         }
-        for(int i=0;i<2360;i++){
-            answer=Math.max(answer,book[i]);
+
+        for (int i = 0; i < timeSlot.length; i++) {
+            answer = Math.max(answer, timeSlot[i]);
         }
+
         return answer;
     }
 }
