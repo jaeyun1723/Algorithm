@@ -4,27 +4,40 @@ class Solution {
 
     public int solution(int[][] jobs) {
         int answer = 0;
-        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> Integer.compare(o1[1], o2[1]));
-        Arrays.sort(jobs, (o1, o2) -> Integer.compare(o1[0], o2[0]));
-        int sec = 0;
-        int count = 0;
-        int index = 0;
-        while (count < jobs.length) {
-            // 현재 시간까지의 작업 넣기
-            while (index < jobs.length && jobs[index][0] <= sec) {
-                pq.offer(jobs[index++]);
+        PriorityQueue<int[]> pq = new PriorityQueue<>(new Comparator<int[]>() {
+            public int compare(int[] o1, int[] o2) {
+                if (o1[2] == o2[2]) {
+                    if (o1[1] == o2[1]) {
+                        return Integer.compare(o1[0], o2[0]);
+                    }
+                    return Integer.compare(o1[1], o2[1]);
+                }
+                return Integer.compare(o1[2], o2[2]);
             }
-            // 현재 작업이 수행 중이면 그거 계산하기
-            if (pq.isEmpty()) { // 작업할 게 없으면
-                sec = jobs[index][0]; // 다음 작업 시간으로 이동
+        });
+
+        Arrays.sort(jobs, (o1, o2) -> Integer.compare(o1[0], o2[0]));
+
+        int done = 0;
+        int time = 0;
+        int idx = 0;
+        while (done < jobs.length) {
+            while (idx < jobs.length && jobs[idx][0] <= time) {
+                int[] job = {idx, jobs[idx][0], jobs[idx][1]};
+                pq.add(job);
+                idx++;
+            }
+            if (pq.isEmpty()) {
+                time = jobs[idx][0];
             } else {
-                int[] task = pq.poll();
-                sec += task[1]; // 다음 작업 시간으로 이동
-                answer += sec - task[0];
-                count++;
+                int[] job = pq.poll();
+                int finish = time + job[2];
+                answer += finish - job[1];
+                done++;
+                time = finish;
             }
         }
 
-        return answer / jobs.length;
+        return answer /= jobs.length;
     }
 }
