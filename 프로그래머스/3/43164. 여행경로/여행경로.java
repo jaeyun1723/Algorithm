@@ -2,29 +2,68 @@ import java.util.*;
 
 class Solution {
 
-    static boolean[] useTickets;
-    static ArrayList<String> routes;
+    static Map<String, ArrayList<Ticket>> map = new HashMap<>();
+    static int ticket;
+    static boolean flag = false;
+    static ArrayList<String> path = new ArrayList<>();
 
-    public static void dfs(int len, String now, String route, String[][] tickets) {
-        if (len == tickets.length) {
-            routes.add(route);
+    public void dfs(String dpt, int count, boolean[] isVisit) {
+        if (flag) {
             return;
         }
-        for (int i = 0; i < tickets.length; i++) {
-            if (!useTickets[i] && tickets[i][0].equals(now)) {
-                useTickets[i] = true;
-                dfs(len + 1, tickets[i][1], route + "," + tickets[i][1], tickets);
-                useTickets[i] = false;
+        if (count == ticket) {
+            flag = true;
+            return;
+        }
+        if (map.containsKey(dpt)) {
+            for (Ticket t : map.get(dpt)) {
+                if (!isVisit[t.no]) {
+                    isVisit[t.no] = true;
+                    path.add(t.en);
+                    dfs(t.en, count + 1, isVisit);
+                    if (flag) {
+                        return;
+                    }
+                    path.remove(path.size() - 1);
+                    isVisit[t.no] = false;
+                }
             }
         }
+
     }
 
     public String[] solution(String[][] tickets) {
-        routes = new ArrayList<String>();
-        useTickets = new boolean[tickets.length];
+        String[] answer = {};
+        ticket = tickets.length;
+        for (int i = 0; i < tickets.length; i++) {
+            String st = tickets[i][0];
+            String en = tickets[i][1];
+            ArrayList<Ticket> list = map.getOrDefault(st, new ArrayList<Ticket>());
+            list.add(new Ticket(i, st, en));
+            map.put(st, list);
+        }
+        for (String airport : map.keySet()) {
+            ArrayList<Ticket> list = map.get(airport);
+            list.sort((o1, o2) -> o1.en.compareTo(o2.en));
+        }
 
-        dfs(0, "ICN", "ICN", tickets);
-        Collections.sort(routes);
-        return routes.get(0).split(",");
+        path.add("ICN");
+        boolean[] isVisit = new boolean[tickets.length];
+        dfs("ICN", 0, isVisit);
+        answer = path.toArray(String[]::new);
+        return answer;
+    }
+
+    public class Ticket {
+
+        int no;
+        String st;
+        String en;
+
+        public Ticket(int no, String st, String en) {
+            this.no = no;
+            this.st = st;
+            this.en = en;
+        }
     }
 }
