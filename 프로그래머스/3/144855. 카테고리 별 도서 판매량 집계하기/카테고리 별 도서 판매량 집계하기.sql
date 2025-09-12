@@ -1,7 +1,5 @@
-SELECT category, sum(sales) as total_sales
-FROM book as b JOIN (SELECT *
-                     FROM book_sales
-                     WHERE date_format(sales_date, '%Y-%m') = '2022-01') as c
-               ON b.book_id=c.book_id
+SELECT category, sum(sales)
+FROM BOOK as a JOIN BOOK_SALES as b ON a.book_id=b.book_id
+WHERE DATE_FORMAT(sales_date,'%Y-%m') = '2022-01'
 GROUP BY category
 ORDER BY category
