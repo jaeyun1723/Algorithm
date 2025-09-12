@@ -1,22 +1,28 @@
 class Solution {
 
-    public boolean isSolved(int[] diffs, int[] times, int level, long limit) {
-        long time = 0;
+    public boolean isFinished(int[] diffs, int[] times, long limit, int level) {
+        long sum = 0;
         for (int i = 0; i < diffs.length; i++) {
-            if (time > limit) return false;
+            if (limit < sum) {
+                return false;
+            }
             if (diffs[i] <= level) {
-                time += times[i];
+                sum += times[i];
             } else {
-                int turn = diffs[i] - level;
-                if (i == 0) {
-                    time += (long) (turn + 1) * times[i];
+                int count = diffs[i] - level;
+                long again;
+                if (i > 0) {
+                    again = (times[i - 1] + times[i]) * count + times[i];
                 } else {
-                    time += (long) turn * (times[i - 1] + times[i]) + times[i];
+                    again = times[i] * count + times[i];
                 }
+                sum += again;
             }
         }
-        if (time <= limit) return true;
-        return false;
+        if (limit < sum) {
+            return false;
+        }
+        return true;
     }
 
     public int solution(int[] diffs, int[] times, long limit) {
@@ -26,10 +32,9 @@ class Solution {
         for (int i = 0; i < diffs.length; i++) {
             high = Math.max(high, diffs[i]);
         }
-
         while (low <= high) {
             int mid = (low + high) / 2;
-            if (isSolved(diffs, times, mid, limit)) {
+            if (isFinished(diffs, times, limit, mid)) {
                 high = mid - 1;
                 answer = mid;
             } else {
