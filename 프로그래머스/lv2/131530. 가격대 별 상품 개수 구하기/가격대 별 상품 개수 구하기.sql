@@ -1,0 +1,18 @@
+# SELECT  FLOOR(PRICE/10000)*10000 AS PRICE_GROUP
+#         , COUNT(*) AS PRODUCTS
+#   FROM  product
+#  GROUP 
+#     BY  PRICE_GROUP
+#  ORDER
+#     BY  PRICE_GROUP
+    
+    WITH RECURSIVE cte AS (
+  SELECT 0 AS a
+  UNION ALL
+  SELECT a + 10000
+  FROM cte
+  WHERE a + 10000 <= 100000
+)
+
+SELECT *
+FROM cte
