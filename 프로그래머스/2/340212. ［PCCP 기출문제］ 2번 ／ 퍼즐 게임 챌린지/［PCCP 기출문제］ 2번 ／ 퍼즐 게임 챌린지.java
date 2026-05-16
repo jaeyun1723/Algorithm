@@ -1,28 +1,24 @@
 class Solution {
 
-    public boolean isFinished(int[] diffs, int[] times, long limit, int level) {
-        long sum = 0;
+
+    public boolean canSolve(int[] diffs, int[] times, int level, long limit) {
+        long timer = 0;
         for (int i = 0; i < diffs.length; i++) {
-            if (limit < sum) {
+            if (diffs[i] <= level) {
+                timer += times[i];
+            } else {
+                int cnt = diffs[i] - level; // 틀린 개수
+                if (i > 0) {
+                    timer += (times[i - 1] + times[i]) * cnt + times[i];
+                } else {
+                    timer += times[i] * (cnt + 1);
+                }
+            }
+            if (timer > limit) {
                 return false;
             }
-            if (diffs[i] <= level) {
-                sum += times[i];
-            } else {
-                int count = diffs[i] - level;
-                long again;
-                if (i > 0) {
-                    again = (times[i - 1] + times[i]) * count + times[i];
-                } else {
-                    again = times[i] * count + times[i];
-                }
-                sum += again;
-            }
         }
-        if (limit < sum) {
-            return false;
-        }
-        return true;
+        return timer <= limit;
     }
 
     public int solution(int[] diffs, int[] times, long limit) {
@@ -32,11 +28,12 @@ class Solution {
         for (int i = 0; i < diffs.length; i++) {
             high = Math.max(high, diffs[i]);
         }
+
         while (low <= high) {
             int mid = (low + high) / 2;
-            if (isFinished(diffs, times, limit, mid)) {
-                high = mid - 1;
+            if (canSolve(diffs, times, mid, limit)) {
                 answer = mid;
+                high = mid - 1;
             } else {
                 low = mid + 1;
             }
