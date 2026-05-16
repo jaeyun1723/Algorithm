@@ -2,21 +2,22 @@ class Solution {
 
     static int answer = 0;
 
-    public void maxDungeons(int now, int clear, int[][] dungeons, boolean[] dungeon) {
+    public void game(int k, int[][] dungeons, int clear, boolean[] isVisited) {
         for (int i = 0; i < dungeons.length; i++) {
-            if (!dungeon[i] && now >= dungeons[i][0]) {
-                dungeon[i] = true;
-                maxDungeons(now - dungeons[i][1], clear + 1, dungeons, dungeon);
-                dungeon[i] = false;
+            if (isVisited[i]) {
+                continue;
+            }
+            if (k >= dungeons[i][0]) {
+                isVisited[i] = true;
+                game(k - dungeons[i][1], dungeons, clear + 1, isVisited);
+                isVisited[i] = false;
             }
         }
         answer = Math.max(answer, clear);
-        return;
     }
 
-
     public int solution(int k, int[][] dungeons) {
-        maxDungeons(k, 0, dungeons, new boolean[dungeons.length]);
+        game(k, dungeons, 0, new boolean[dungeons.length]);
         return answer;
     }
 }
